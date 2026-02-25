@@ -1,5 +1,6 @@
 const { default: mongoose } = require("mongoose");
 const devModel = require("../models/devModel");
+const { asyncHandler } = require("../utils/asyncHandler");
 
 const createDevNote = async (req, res) => {
   try {
@@ -27,18 +28,14 @@ const createDevNote = async (req, res) => {
 
 // ========================================================
 
-const allDevNotes = async (req, res) => {
-  try {
-    const notes = await devModel.find();
-    if (!notes) {
-      return res.status(400).json({ message: "Notes Not Found" });
-    }
-    res.status(200).json({ message: "Here is/are your note(s)", data: notes });
-  } catch (err) {
-    console.error(err);
-    res.status(400).json({ message: err.message });
+const allDevNotes = asyncHandler(async (req, res, next) => {
+  const notes = await devModel.find();
+
+  if (!notes) {
+    return res.status(400).json({ message: "Notes Not Found" });
   }
-};
+  res.status(200).json({ message: "Here is/are your note(s)", data: notes });
+});
 
 // ========================================================
 

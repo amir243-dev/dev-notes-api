@@ -7,6 +7,7 @@ const cors = require("cors");
 require("dotenv").config();
 
 const devRoute = require("./routes/devRoute");
+const { errorHandler } = require("./middlewares/errorMiddleware");
 
 // THE INITIALIZATION OF EXPRESS.JS AND THE PORT
 const main = express();
@@ -18,7 +19,7 @@ main.use(express.json());
 
 // THE "ROUTE" MIDDLEWARE
 main.use("/api/notes", devRoute);
-
+main.use(errorHandler);
 // =====================================
 // HEALTH CHECK ON POSTMAN
 main.get("/health", (req, res) => {
