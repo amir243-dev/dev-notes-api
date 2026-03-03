@@ -1,5 +1,3 @@
-const express = require("express");
-
 const asyncHandler = (fn) => (req, res, next) => {
   // We resolve the function as a Promise.
   // If it fails, .catch(next) automatically sends it to your error middleware.

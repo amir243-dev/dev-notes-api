@@ -1,17 +1,13 @@
 const mongoose = require("mongoose");
 
 const devNotes = new mongoose.Schema({
-  user: {
-    type: String,
-    required: false,
-  },
-
   title: String,
 
   note: {
     type: String,
     required: true,
   },
+
   createdAt: {
     type: Date,
     default: Date.now,

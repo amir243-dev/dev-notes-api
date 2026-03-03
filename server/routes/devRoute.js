@@ -5,12 +5,14 @@ const {
   updateDevNote,
   deleteDevNote,
 } = require("../controllers/devController");
+const { noteValidationRules } = require("../validators/noteValidator");
+const { validation } = require("../middlewares/validationMiddleware");
 
 const router = express.Router();
 
-router.post("/", createDevNote);
+router.post("/", noteValidationRules, validation, createDevNote);
 router.get("/all", allDevNotes);
-router.patch("/update/:id", updateDevNote);
+router.patch("/update/:id", noteValidationRules, validation, updateDevNote);
 router.delete("/delete/:id", deleteDevNote);
 
 module.exports = router;
