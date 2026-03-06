@@ -6,6 +6,7 @@ const cors = require("cors");
 require("dotenv").config();
 
 const devRoute = require("./routes/devRoute");
+const userRoute = require("./routes/userRoute");
 
 // A GLOBAL ERROR MIDDLEWARE THAT SERVES AS A NET, NOT A GATE-KEEP.
 const { errorHandler } = require("./middlewares/errorMiddleware");
@@ -20,6 +21,7 @@ main.use(express.json());
 
 // THE "ROUTE" MIDDLEWARE
 main.use("/api/notes", devRoute);
+main.use("/api/auth", userRoute);
 main.use(errorHandler);
 
 // HEALTH CHECK ON POSTMAN/CHROME LOCALHOST
