@@ -29,7 +29,13 @@ const userSchema = new mongoose.Schema(
 );
 
 // =========================================
+userSchema.methods.matchPassword = async function (enteredPassword) {
+  return await bycryptjs.compare(enteredPassword, this.password);
+};
 
+// =============================================================
+
+// ==============================================================
 userSchema.pre("save", async function (next) {
   // Only hash when password is new or modified
   if (!this.isModified("password")) {

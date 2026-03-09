@@ -1,6 +1,7 @@
 const user = require("../models/userModel");
 const { ApiResponse } = require("../utils/apiResponse");
 const { asyncHandler } = require("../utils/asyncHandler");
+const { generateToken } = require("../utils/generateToken");
 
 // =================THE CONTROLLERS==========================
 
@@ -9,7 +10,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
   const userExists = await user.findOne({ email });
   if (userExists) {
-    return res.status(400).json({ Message: "User already exists" });
+    throw new Error();
   }
 
   const newUser = await user.create({
@@ -32,9 +33,34 @@ const registerUser = asyncHandler(async (req, res) => {
       ),
     );
   } else {
-    res.status(400).json({ Message: "Invalid user data" });
+    throw new Error("Registration unsuccessful");
   }
 });
 
 // ====================================================
-module.exports = { registerUser };
+
+const loginUser = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+  // Find the User by Email
+  const foundUser = await user.findOne({ email });
+  if (foundUser && (await foundUser.matchPassword(password))) {
+    res.status(200).json(
+      new ApiResponse(
+        200,
+        {
+          _id: foundUser._id,
+          name: foundUser.name,
+          email: foundUser.email,
+          token: generateToken(foundUser._id),
+        },
+        "Login successful",
+      ),
+    );
+  } else {
+    res.status(401);
+    throw new Error("Invalid Email & Password");
+  }
+});
+
+// ====================================================
+module.exports = { registerUser, loginUser };
