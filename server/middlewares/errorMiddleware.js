@@ -2,7 +2,7 @@ require("dotenv").config();
 
 const errorHandler = (err, req, res, next) => {
   // 1. Determine the Status Code
-  const statusCode = res.statusCode === 200 || 201 ? 500 : res.statusCode;
+  const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
 
   //   2. Set the Status
   res.status(statusCode);

@@ -63,4 +63,28 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 // ====================================================
-module.exports = { registerUser, loginUser };
+const getUserProfile = asyncHandler(async (req, res) => {
+  // our req.user was populated by the gatekeeper middleware
+
+  const userProfile = await user.findById(req.user._id);
+
+  if (userProfile) {
+    res.status(200).json(
+      new ApiResponse(
+        200,
+        {
+          _id: userProfile._id,
+          name: userProfile.name,
+          email: userProfile.email,
+        },
+        "User Profile retrieved",
+      ),
+    );
+  } else {
+    res.status(404);
+    throw new Error();
+  }
+});
+
+// ====================================================
+module.exports = { registerUser, loginUser, getUserProfile };

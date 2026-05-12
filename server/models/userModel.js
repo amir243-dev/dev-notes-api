@@ -47,5 +47,12 @@ userSchema.pre("save", async function (next) {
   this.password = await bycryptjs.hash(this.password, salt);
   next;
 });
+
+userSchema.pre("remove", async function (next) {
+  if (this.isDeleted(userSchema)) {
+    return next;
+  }
+});
+
 // ==============================
 module.exports = mongoose.model("User", userSchema);
