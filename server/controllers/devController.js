@@ -25,44 +25,92 @@ const createDevNote = asyncHandler(async (req, res) => {
 // ========================================================
 
 const allDevNotes = asyncHandler(async (req, res) => {
-  // Get all limits and skips from the query string(set defaults if missing)
+  /**
+   * LAYER 1: THE INPUTS (What does the user want?)
+   * We grab strings from the URL and turn them into logic.
+   */
   const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 2;
-
-  // calculate the "skip" math
+  const limit = parseInt(req.query.limit) || 10;
   const skip = (page - 1) * limit;
 
-  // Query the database with limit and skip applied
+  // Search: If 'search' exists in URL, create a Regex. If not, ignore it.
+  const searchFilter = req.query.search
+    ? { title: { $regex: req.query.search, $options: "i" } }
+    : {};
+
+  // Sort: Turn "title,createdAt" into "title createdAt" for Mongoose
+  const sortBy = req.query.sort
+    ? req.query.sort.split(",").join(" ")
+    : "-createdAt";
+
+  /**
+   * LAYER 2: THE QUERY (Talking to MongoDB)
+   * We combine 'Ownership' + 'Search' into one filter.
+   */
+  const finalQuery = {
+    user: req.user.id,
+    ...searchFilter,
+  };
+
+  // The Chain: Find it -> Sort it -> Skip some -> Limit some
   const notes = await devModel
-    .find({ user: req.user.id })
+    .find(finalQuery)
+    .sort(sortBy)
     .skip(skip)
     .limit(limit)
-    .sort({ createdAt: -1 });
+    .populate("user", "name email");
 
-  // Get the total count of notes for this user (so the frontend knows how many pages exist)
-  const totalNotes = await devModel.countDocuments({ user: req.user.id });
+  /**
+   * LAYER 3: THE METADATA (Calculating the "Map")
+   * We need to tell the frontend how much more data exists.
+   */
+  const totalNotes = await devModel.countDocuments(finalQuery);
   const totalPages = Math.ceil(totalNotes / limit);
 
-  if (!notes) {
-    return res.status(400).json({ message: "Notes Not Found" });
-  }
+  // Send the response using your ApiResponse class
   res.status(200).json(
     new ApiResponse(
       200,
-      notes,
       {
+        notes,
         meta: {
           totalNotes,
           totalPages,
           currentPage: page,
-          notesPerPage: limit,
+          limit,
         },
       },
-      "Notes retrieved successfully",
+      "Data retrieved successfully",
     ),
   );
 });
 
+// ========================================================
+const getNoteStats = asyncHandler(async (req, res) => {
+  const stats = await devModel.aggregate([
+    // STAGE 1: Filter - only look at notes belonging to the current user
+    { $match: { user: req.user._id } },
+
+    // STAGE 2: Transform - group the data and perform the calculation
+    {
+      $group: {
+        _id: null, // We want one result for everything, not grouped by a category
+        totalNotes: { $sum: 1 }, // Count every document that passed the $match
+        avgContentLength: { $avg: { $strLenCP: "$note" } }, // Bonus: how long are the notes?
+      },
+    },
+  ]);
+  // If the user has zero notes, stats will be an empty array [].
+  // We handle that gracefully.
+  const result =
+    (await stats).length > 0
+      ? stats[0]
+      : { totalNotes: 0, avgContentLength: 0 };
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, result, "Stats retrieved successfully"));
+});
 // ========================================================
 
 const updateDevNote = asyncHandler(async (req, res) => {
@@ -117,4 +165,10 @@ const deleteDevNote = asyncHandler(async (req, res) => {
 
 // =====================================================
 
-module.exports = { createDevNote, allDevNotes, updateDevNote, deleteDevNote };
+module.exports = {
+  createDevNote,
+  allDevNotes,
+  getNoteStats,
+  updateDevNote,
+  deleteDevNote,
+};
