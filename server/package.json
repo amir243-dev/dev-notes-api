@@ -4,9 +4,9 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node main.js",
-    "dev": "nodemon main.js"
+    "dev": "npx tsx watch server.ts",
+    "start": "npx tsx server.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
@@ -24,6 +24,12 @@
     "nodemon": "^3.1.11"
   },
   "devDependencies": {
-    "@types/node": "^25.7.0"
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^25.7.0",
+    "tsx": "^4.23.12",
+    "typescript": "^7.0.2"
   }
 }
