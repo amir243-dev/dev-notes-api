@@ -1,4 +1,4 @@
-const user = require("../models/userModel");
+const User = require("../models/user.model").default;
 const { ApiResponse } = require("../utils/apiResponse");
 const { asyncHandler } = require("../utils/asyncHandler");
 const { generateToken } = require("../utils/generateToken");
@@ -8,12 +8,7 @@ const { generateToken } = require("../utils/generateToken");
 const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
 
-  const userExists = await user.findOne({ email });
-  if (userExists) {
-    throw new Error();
-  }
-
-  const newUser = await user.create({
+  const newUser = await User.create({
     name,
     email,
     password,
@@ -42,7 +37,7 @@ const registerUser = asyncHandler(async (req, res) => {
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   // Find the User by Email
-  const foundUser = await user.findOne({ email });
+  const foundUser = await User.findOne({ email });
   if (foundUser && (await foundUser.matchPassword(password))) {
     res.status(200).json(
       new ApiResponse(
@@ -66,7 +61,7 @@ const loginUser = asyncHandler(async (req, res) => {
 const getUserProfile = asyncHandler(async (req, res) => {
   // our req.user was populated by the gatekeeper middleware
 
-  const userProfile = await user.findById(req.user._id);
+  const userProfile = await User.findById(req.user._id);
 
   if (userProfile) {
     res.status(200).json(

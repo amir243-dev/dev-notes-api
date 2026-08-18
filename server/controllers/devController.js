@@ -1,4 +1,4 @@
-const devModel = require("../models/devModel");
+const Note = require("../models/note.model");
 const { asyncHandler } = require("../utils/asyncHandler");
 const { ApiResponse } = require("../utils/apiResponse");
 
@@ -10,13 +10,13 @@ const createDevNote = asyncHandler(async (req, res) => {
   const { title, note } = req.body;
 
   // CHECK FOR EXISTING NOTES= MANUAL RESULT-CHECK.
-  const checkExistingNotes = await devModel.findOne({ title });
+  const checkExistingNotes = await Note.findOne({ title });
 
   if (checkExistingNotes) {
     return res.status(400).json({ Message: "Title Found" });
   }
   // VALIDATED? THEN CREATE.
-  const devNote = await devModel.create({ title, note, user: req.user._id });
+  const devNote = await Note.create({ title, note, user: req.user._id });
   res
     .status(201)
     .json(new ApiResponse(201, devNote, "Note created Successfully"));
@@ -53,8 +53,7 @@ const allDevNotes = asyncHandler(async (req, res) => {
   };
 
   // The Chain: Find it -> Sort it -> Skip some -> Limit some
-  const notes = await devModel
-    .find(finalQuery)
+  const notes = await Note.find(finalQuery)
     .sort(sortBy)
     .skip(skip)
     .limit(limit)
@@ -64,7 +63,7 @@ const allDevNotes = asyncHandler(async (req, res) => {
    * LAYER 3: THE METADATA (Calculating the "Map")
    * We need to tell the frontend how much more data exists.
    */
-  const totalNotes = await devModel.countDocuments(finalQuery);
+  const totalNotes = await Note.countDocuments(finalQuery);
   const totalPages = Math.ceil(totalNotes / limit);
 
   // Send the response using your ApiResponse class
@@ -87,7 +86,7 @@ const allDevNotes = asyncHandler(async (req, res) => {
 
 // ========================================================
 const getNoteStats = asyncHandler(async (req, res) => {
-  const stats = await devModel.aggregate([
+  const stats = await Note.aggregate([
     // STAGE 1: Filter - only look at notes belonging to the current user
     { $match: { user: req.user._id } },
 
@@ -117,7 +116,7 @@ const updateDevNote = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { title, note } = req.body;
 
-  const updateNote = await devModel.findById(id);
+  const updateNote = await Note.findById(id);
 
   if (!updateNote) {
     res.status(404);
@@ -145,7 +144,7 @@ const updateDevNote = asyncHandler(async (req, res) => {
 const deleteDevNote = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
-  const deleteNote = await devModel.findById(id);
+  const deleteNote = await Note.findById(id);
 
   if (!deleteNote) {
     res.status(404);

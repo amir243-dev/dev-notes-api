@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const { asyncHandler } = require("../utils/asyncHandler");
-const User = require("../models/userModel");
+const User = require("../models/user.model");
 
 const gatekeeper = asyncHandler(async (req, res, next) => {
   let token;
