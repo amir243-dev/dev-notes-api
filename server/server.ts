@@ -2,13 +2,11 @@ import express, { Request, Response } from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
+import { notFound, errorHandler } from "./middlewares/error.middleware";
+import userRoutes from "./routes/user.routes";
+import noteRoutes from "./routes/note.routes";
 
 dotenv.config();
-
-// Keep require() for local .js files until we migrate them in Days 2-3
-const devRoute = require("./routes/devRoute");
-const userRoute = require("./routes/userRoute");
-const { errorHandler } = require("./middlewares/errorMiddleware");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -16,8 +14,8 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-app.use("/api/notes", devRoute);
-app.use("/api/auth", userRoute);
+app.use("/api/notes", noteRoutes);
+app.use("/api/auth", userRoutes);
 
 // Health check
 app.get("/health", (req: Request, res: Response) => {
@@ -29,6 +27,7 @@ app.get("/health", (req: Request, res: Response) => {
 });
 
 // Error handler after routes
+app.use(notFound);
 app.use(errorHandler);
 
 const start = async (): Promise<void> => {
