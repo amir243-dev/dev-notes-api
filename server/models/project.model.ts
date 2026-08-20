@@ -14,6 +14,7 @@ const projectSchema = new Schema<IProject>(
     name: {
       type: String,
       required: [true, "Please add a project name"],
+      unique: true,
       trim: true,
     },
     description: {

@@ -2,9 +2,11 @@ import express, { Request, Response } from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
+import rateLimit from "express-rate-limit";
 import { notFound, errorHandler } from "./middlewares/error.middleware";
 import userRoutes from "./routes/user.routes";
 import noteRoutes from "./routes/note.routes";
+import projectRoutes from "./routes/project.routes";
 
 dotenv.config();
 
@@ -13,9 +15,16 @@ const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
-
+// ===================
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  message: { message: "Too many login attempts, retry after 15 minutes" },
+});
+// ==================
 app.use("/api/notes", noteRoutes);
 app.use("/api/auth", userRoutes);
+app.use("/api/projects", projectRoutes);
 
 // Health check
 app.get("/health", (req: Request, res: Response) => {
