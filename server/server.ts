@@ -21,6 +21,10 @@ const authLimiter = rateLimit({
   max: 20,
   message: { message: "Too many login attempts, retry after 15 minutes" },
 });
+
+// Apply ONLY to auth routes
+app.use("/api/auth/login", authLimiter);
+app.use("/api/auth/register", authLimiter);
 // ==================
 app.use("/api/notes", noteRoutes);
 app.use("/api/auth", userRoutes);

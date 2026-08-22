@@ -1,0 +1,94 @@
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap");
+
+:root {
+  --paper: #f4f3ef;
+  --ink: #22262b;
+  --sage: #56705a;
+  --slate: #47617b;
+  --ochre: #8a6a3e;
+  --rust: #8f4e42;
+  --border: #d1d5db;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "IBM Plex Sans", sans-serif;
+  background-color: var(--paper);
+  color: var(--ink);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+.display {
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+code,
+.mono {
+  font-family: "IBM Plex Mono", monospace;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+input,
+textarea,
+select {
+  font-family: inherit;
+  font-size: 1rem;
+  border: 1px solid var(--border);
+  background: white;
+  padding: 0.75rem;
+  border-radius: 4px;
+  width: 100%;
+  color: var(--ink);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 2px solid var(--slate);
+  outline-offset: 1px;
+}
+
+.btn-primary {
+  background-color: var(--ink);
+  color: var(--paper);
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  border-radius: 4px;
+  transition: opacity 0.2s;
+}
+.btn-primary:hover {
+  opacity: 0.9;
+}
+
+.tag {
+  display: inline-block;
+  background-color: var(--paper);
+  border: 1px solid var(--border);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-family: "IBM Plex Mono", monospace;
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+}
