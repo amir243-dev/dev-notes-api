@@ -5,6 +5,8 @@ import Capture from "./pages/Capture";
 import Projects from "./pages/Projects";
 import Stats from "./pages/Stats";
 import Layout from "./components/Layout";
+import ProjectView from "./pages/ProjectView";
+import NoteDetail from "./pages/NoteDetail";
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -43,6 +45,8 @@ function AppRoutes() {
       >
         <Route path="/" element={<Capture />} />
         <Route path="/projects" element={<Projects />} />
+        <Route path="/projects/:projectId" element={<ProjectView />} />
+        <Route path="/notes/:noteId" element={<NoteDetail />} />
         <Route path="/stats" element={<Stats />} />
       </Route>
     </Routes>

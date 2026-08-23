@@ -2,6 +2,7 @@ import express from "express";
 import {
   createNote,
   getNotes,
+  getNoteById,
   updateNote,
   deleteNote,
   getStats,
@@ -15,6 +16,6 @@ router.use(protect); // All note routes require auth
 router.route("/").post(createNote).get(getNotes);
 router.get("/stats", getStats);
 
-router.route("/:id").put(updateNote).delete(deleteNote);
+router.route("/:id").get(getNoteById).put(updateNote).delete(deleteNote);
 
 export default router;

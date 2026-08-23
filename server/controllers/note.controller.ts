@@ -60,6 +60,17 @@ export const getNotes = async (req: Request, res: Response) => {
 
 // ======================================================================
 
+export const getNoteById = async (req: Request, res: Response) => {
+  const note = await Note.findOne({
+    _id: req.params.id,
+    userId: req.user?._id,
+  }).populate("projectId", "name");
+  if (!note) return res.status(404).json({ message: "Note not found" });
+  return res.status(200).json(note);
+};
+
+// ======================================================================
+
 export const updateNote = async (req: Request, res: Response) => {
   const note = await Note.findOne({
     _id: req.params.id,

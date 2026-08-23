@@ -80,7 +80,8 @@ export default function Projects() {
             <div
               key={p._id}
               className="pcard"
-              style={{ borderTop: `3px solid ${color}` }}
+              style={{ borderTop: `3px solid ${color}`, cursor: "pointer" }}
+              onClick={() => (window.location.href = `/projects/${p._id}`)}
             >
               <div className="p-top">
                 <span className="p-sq" style={{ background: color }}></span>
