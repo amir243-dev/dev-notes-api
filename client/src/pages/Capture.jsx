@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import api from "../api";
 
 export default function Capture() {
@@ -9,10 +9,16 @@ export default function Capture() {
   const [tags, setTags] = useState([]);
 
   useEffect(() => {
-    api.get("/projects").then((res) => setProjects(res.data));
-    if (res.data.length > 0) setProjectId(res.data[0]._id);
-  }).catch(() => {
-    alert("Failed to load projects. Ensure Backend is running. ");
+    const fetchProjects = async () => {
+      try {
+        const res = await api.get("/projects");
+        setProjects(res.data);
+        if (res.data.length > 0) setProjectId(res.data[0]._id);
+      } catch (error) {
+        console.error("Failed to fetch projects:", error);
+      }
+    };
+    fetchProjects();
   }, []);
 
   const handleTagKeyDown = (e) => {
@@ -27,47 +33,49 @@ export default function Capture() {
     e.preventDefault();
     if (!content.trim() || !projectId)
       return alert("Project and content required");
-
-    await api.post("/notes", { content, projectId, tags });
-    setContent("");
-    setTags([]);
-    setTagInput("");
-    alert("Entry Saved");
+    try {
+      await api.post("/notes", { content, projectId, tags });
+      setContent("");
+      setTags([]);
+      setTagInput("");
+    } catch (error) {
+      console.error("Failed to save note:", error);
+    }
   };
 
-  // ========================================
+  const today = new Date()
+    .toLocaleDateString("en-GB", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    })
+    .toUpperCase()
+    .replace(",", " · ");
+
   return (
-    <div>
-      <div
-        className="mono"
-        style={{
-          fontSize: "0.75rem",
-          color: "var(--slate)",
-          marginBottom: "1rem",
-        }}
-      >
-        CAPTURE TODAY'S BUILD. ONE THOUGHT, SAVED BEFORE IT'S GONE.
-      </div>
-      <form
-        onSubmit={handleSubmit}
-        style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
-      >
+    <>
+      <div className="head-row" style={{ marginBottom: "24px" }}>
         <div>
-          <label
-            className="mono"
-            style={{
-              fontSize: "0.75rem",
-              display: "block",
-              marginBottom: "0.5rem",
-            }}
-          >
-            PROJECT
-          </label>
+          <div className="eyebrow">{today}</div>
+          <h1 className="h1" style={{ marginTop: "8px" }}>
+            Capture today's build.
+          </h1>
+        </div>
+      </div>
+      <p className="sub" style={{ marginBottom: "24px" }}>
+        One thought, saved before it's gone.
+      </p>
+
+      <form onSubmit={handleSubmit}>
+        <div className="field">
+          <label className="field-label">PROJECT</label>
           <select
+            className="select"
             value={projectId}
             onChange={(e) => setProjectId(e.target.value)}
           >
-            {projects.length === 0 && <option>No projects yet</option>}
+            {projects.length === 0 && <option value="">No projects yet</option>}
             {projects.map((p) => (
               <option key={p._id} value={p._id}>
                 {p.name}
@@ -75,75 +83,58 @@ export default function Capture() {
             ))}
           </select>
         </div>
-        <div>
-          <label
-            className="mono"
-            style={{
-              fontSize: "0.75rem",
-              display: "block",
-              marginBottom: "0.5rem",
-            }}
-          >
-            TAGS
-          </label>
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              marginBottom: "0.5rem",
-            }}
-          >
+
+        <div className="field">
+          <label className="field-label">TAGS</label>
+          <div className="tagbox">
             {tags.map((t) => (
-              <span
-                key={t}
-                className="tag"
-                onClick={() => setTags(tags.filter((x) => x !== t))}
-                style={{ cursor: "pointer" }}
-              >
-                {t} ×
+              <span key={t} className="chip c-slate chip-sm">
+                {t}
+                <button
+                  type="button"
+                  className="chip-x"
+                  onClick={() => setTags(tags.filter((x) => x !== t))}
+                >
+                  ×
+                </button>
               </span>
             ))}
+            <input
+              type="text"
+              className="tag-add"
+              placeholder="+ add tag…"
+              value={tagInput}
+              onChange={(e) => setTagInput(e.target.value)}
+              onKeyDown={handleTagKeyDown}
+            />
           </div>
-          <input
-            type="text"
-            placeholder="add tag and press enter..."
-            value={tagInput}
-            onChange={(e) => setTagInput(e.target.value)}
-            onKeyDown={handleTagKeyDown}
-          />
         </div>
-        <div>
-          <label
-            className="mono"
-            style={{
-              display: "block",
-              fontSize: "0.75rem",
-              marginBottom: "0.5rem",
-            }}
-          >
-            NOTE
-          </label>
+
+        <div className="field">
+          <label className="field-label">NOTE</label>
           <textarea
-            placeholder="what did you break, learn or decide today"
+            className="textarea"
+            placeholder="What did you build, break, or decide today?"
             value={content}
             onChange={(e) => setContent(e.target.value)}
           />
           <div
-            className="mono"
-            style={{
-              fontSize: "0.75rem",
-              color: "var(--slate)",
-              marginTop: "0.5rem",
-              textAlign: "right",
-            }}
+            className="autometa"
+            style={{ marginTop: "8px", textAlign: "right" }}
           >
             {content.split(/\s+/).filter(Boolean).length} WORDS
           </div>
         </div>
-        <button type="submit" className="btn-primary" style={{ width: "100%" }}>
-          Save entry ⌘↩
+
+        <button
+          type="submit"
+          className="btn btn-primary btn-block"
+          style={{ marginTop: "16px" }}
+        >
+          Save entry
+          <span className="kbd">⌘↩</span>
         </button>
       </form>
-    </div>
+    </>
   );
 }

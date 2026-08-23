@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
@@ -13,75 +13,129 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (isRegister) {
-        await register(name, email, password);
-      } else {
-        await login(email, password);
-        navigate("/");
-      }
+      if (isRegister) await register(name, email, password);
+      else await login(email, password);
+      navigate("/");
     } catch (err) {
-      alert(err.response?.data?.message || "Authentication Failed");
+      alert(err.response?.data?.message || "Authentication failed");
     }
   };
 
   return (
-    <div
-      style={{
-        maxWidth: "420px",
-        margin: "0 auto",
-        padding: "2rem",
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-      }}
-    >
-      <h1 style={{ marginBottom: "2rem" }}>
-        {isRegister ? "Create Account" : "DevNotes Login"}
-      </h1>
-      <form
-        style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
-        onSubmit={handleSubmit}
-      >
-        {isRegister && (
-          <input
-            type="text"
-            placeholder="Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-        )}
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button type="submit" className="btn-primary">
-          {isRegister ? "Register" : "Login"}
-        </button>
-      </form>
-      <button
-        onClick={() => setIsRegister(!isRegister)}
+    <div className="app">
+      <div
+        className="screen"
         style={{
-          marginTop: "1rem",
-          color: "var(--slate)",
-          textDecoration: "underline",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
         }}
       >
-        {isRegister
-          ? "Already have an account? Login"
-          : "Need an account? Register"}
-      </button>
+        <div style={{ textAlign: "center", marginBottom: "32px" }}>
+          <div className="logo" style={{ margin: "0 auto 12px" }}>
+            &gt;_
+          </div>
+          <div className="wordmark-name" style={{ textAlign: "center" }}>
+            DevNotes
+          </div>
+          <div className="wordmark-sub" style={{ textAlign: "center" }}>
+            BUILD LOG
+          </div>
+        </div>
+
+        <h1 className="h1" style={{ textAlign: "center", marginBottom: "8px" }}>
+          {isRegister ? "Start logging." : "Welcome back."}
+        </h1>
+        <p
+          className="sub"
+          style={{ textAlign: "center", marginBottom: "24px" }}
+        >
+          {isRegister
+            ? "Your engineering decisions, captured as they happen."
+            : "Pick up where your last entry left off."}
+        </p>
+
+        <div
+          style={{
+            display: "flex",
+            gap: "8px",
+            marginBottom: "24px",
+            justifyContent: "center",
+          }}
+        >
+          <button
+            className={`fchip ${!isRegister ? "on" : ""}`}
+            onClick={() => setIsRegister(false)}
+          >
+            Sign in
+          </button>
+          <button
+            className={`fchip ${isRegister ? "on" : ""}`}
+            onClick={() => setIsRegister(true)}
+          >
+            Create account
+          </button>
+        </div>
+
+        <form
+          onSubmit={handleSubmit}
+          style={{ display: "flex", flexDirection: "column", gap: "16px" }}
+        >
+          {isRegister && (
+            <div className="field">
+              <label className="field-label">NAME</label>
+              <input
+                type="text"
+                className="input"
+                placeholder="Jaysh"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+            </div>
+          )}
+          <div className="field">
+            <label className="field-label">EMAIL</label>
+            <input
+              type="email"
+              className="input"
+              placeholder="jaysh@devnotes.app"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="field">
+            <label className="field-label">PASSWORD</label>
+            <input
+              type="password"
+              className="input"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="btn btn-primary btn-block"
+            style={{ marginTop: "8px" }}
+          >
+            {isRegister ? "Create account" : "Sign in"}
+            <span className="kbd">↵</span>
+          </button>
+        </form>
+
+        {/* {!isRegister && (
+          <p className="sub" style={{ textAlign: "center", marginTop: "16px" }}>
+            <p>OR</p>
+            <a href="#" style={{ textDecoration: "underline" }}>
+              Forgot your password?
+            </a>
+          </p>
+        )} */}
+      </div>
     </div>
   );
 }

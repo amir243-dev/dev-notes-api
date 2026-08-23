@@ -1,5 +1,9 @@
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import flameIcon from "../assets/flame.svg";
+import captureIcon from "../assets/capture.svg";
+import projectsIcon from "../assets/projects.svg";
+import statsIcon from "../assets/stats.svg";
 
 export default function Layout() {
   const { user, logout } = useAuth();
@@ -8,101 +12,71 @@ export default function Layout() {
   if (!user) return <Outlet />;
 
   return (
-    <div
-      style={{
-        maxWidth: "420px",
-        margin: "0 auto",
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        borderLeft: "1px solid var(--border)",
-        borderRight: "1px solid var(--border)",
-        backgroundColor: "var(--paper)",
-      }}
-    >
-      <header
-        style={{ padding: "1.5rem", borderBottom: "1px solid var(--border)" }}
-      >
-        <div
-          className="mono"
-          style={{
-            fontSize: "0.75rem",
-            color: "var(--slate)",
-            marginBottom: "0.5rem",
-          }}
-        >
-          &gt;_ DevNotes <span style={{ color: "var(--rust)" }}>BUILD LOG</span>
+    <div className="app">
+      <header className="topbar">
+        <div className="topbar-left">
+          <div className="logo">&gt;_</div>
+          <div className="wordmark">
+            <div className="wordmark-name">DevNotes</div>
+            <div className="wordmark-sub">BUILD LOG</div>
+          </div>
         </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "baseline",
-          }}
-        >
-          <h1 style={{ fontSize: "1.25rem" }}>A SATURDAY · 22 AUG</h1>
-          <button
+        <div className="topbar-right">
+          <div className="streak-chip">
+            <img
+              src={flameIcon}
+              alt=""
+              style={{ width: "12px", height: "12px" }}
+            />
+            <span>12-DAY</span>
+          </div>
+          <div
+            className="avatar"
             onClick={logout}
-            className="mono"
-            style={{ fontSize: "0.75rem", color: "var(--rust)" }}
+            style={{ cursor: "pointer" }}
           >
-            LOG OUT
-          </button>
+            A
+          </div>
         </div>
       </header>
 
-      <main style={{ flex: 1, padding: "1.5rem" }}>
+      <main className="screen">
         <Outlet />
       </main>
 
-      <nav
-        style={{
-          display: "flex",
-          borderTop: "1px solid var(--border)",
-          backgroundColor: "white",
-        }}
-      >
+      <nav className="tabbar">
         <Link
           to="/"
-          style={{
-            flex: 1,
-            padding: "1rem",
-            textAlign: "center",
-            textDecoration: "none",
-            color: location.pathname === "/" ? "var(--ink)" : "var(--slate)",
-            fontWeight: location.pathname === "/" ? "600" : "400",
-          }}
+          className={`tab ${location.pathname === "/" ? "active" : ""}`}
         >
-          CAPTURE
+          <img
+            src={captureIcon}
+            alt=""
+            style={{ width: "20px", height: "20px" }}
+          />
+          <span>CAPTURE</span>
         </Link>
         <Link
           to="/projects"
-          style={{
-            flex: 1,
-            padding: "1rem",
-            textAlign: "center",
-            textDecoration: "none",
-            color: location.pathname.includes("projects")
-              ? "var(--ink)"
-              : "var(--slate)",
-            fontWeight: location.pathname.includes("projects") ? "600" : "400",
-          }}
+          className={`tab ${location.pathname.includes("projects") ? "active" : ""}`}
         >
-          PROJECTS
+          <img
+            src={projectsIcon}
+            alt=""
+            style={{ width: "20px", height: "20px" }}
+          />
+          <span>PROJECTS</span>
         </Link>
         <Link
           to="/stats"
-          style={{
-            flex: 1,
-            padding: "1rem",
-            textAlign: "center",
-            textDecoration: "none",
-            color:
-              location.pathname === "/stats" ? "var(--ink)" : "var(--slate)",
-            fontWeight: location.pathname === "/stats" ? "600" : "400",
-          }}
+          className={`tab ${location.pathname === "/stats" ? "active" : ""}`}
         >
-          STATS
+          <img
+            src={statsIcon}
+            alt=""
+            style={{ width: "20px", height: "20px" }}
+          />
+          <span>STATS</span>
         </Link>
       </nav>
     </div>
