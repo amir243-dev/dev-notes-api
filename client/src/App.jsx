@@ -7,6 +7,7 @@ import Stats from "./pages/Stats";
 import Layout from "./components/Layout";
 import ProjectView from "./pages/ProjectView";
 import NoteDetail from "./pages/NoteDetail";
+import Profile from "./pages/Profile";
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -48,6 +49,7 @@ function AppRoutes() {
         <Route path="/projects/:projectId" element={<ProjectView />} />
         <Route path="/notes/:noteId" element={<NoteDetail />} />
         <Route path="/stats" element={<Stats />} />
+        <Route path="/profile" element={<Profile />} />
       </Route>
     </Routes>
   );

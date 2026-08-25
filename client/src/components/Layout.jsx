@@ -30,13 +30,9 @@ export default function Layout() {
             />
             <span>12-DAY</span>
           </div>
-          <div
-            className="avatar"
-            onClick={logout}
-            style={{ cursor: "pointer" }}
-          >
-            A
-          </div>
+          <Link to="/profile" className="avatar">
+            {user.name ? user.name.charAt(0).toUpperCase() : "A"}
+          </Link>
         </div>
       </header>
 

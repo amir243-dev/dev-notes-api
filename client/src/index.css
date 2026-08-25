@@ -923,3 +923,81 @@ select {
   width: 22px;
   text-align: right;
 }
+
+/* ---------- PROFILE (EXACT MOCKUP CLASSES) ---------- */
+.pfcard {
+  margin-top: 22px;
+  padding: 24px 22px;
+}
+.pf-top {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.pf-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 13px;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+.pf-name {
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 600;
+}
+.pf-mail {
+  font-size: 12.5px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+.pf-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 20px;
+  margin-top: 22px;
+  border-top: 1px solid var(--line-soft);
+  padding-top: 20px;
+}
+.pv {
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 600;
+}
+.pl {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--ghost);
+  margin-top: 3px;
+}
+.pf-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 22px;
+}
+.pf-actions .btn {
+  flex: 1;
+}
+.btn-ghost-rust {
+  background: none;
+  border: none;
+  color: var(--rust);
+  font-weight: 500;
+  padding: 9px 10px;
+  border-radius: 9px;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 13.5px;
+}
+.btn-ghost-rust:hover {
+  background: var(--rust-tint);
+}
