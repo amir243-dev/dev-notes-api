@@ -836,3 +836,90 @@ select {
 .m-foot .btn-primary {
   flex: 1.4;
 }
+
+/* ---------- 14 · STATS (UPDATED MOCKUP) ---------- */
+.streak-hero {
+  padding: 30px 20px 28px;
+  text-align: center;
+  margin-top: 22px;
+}
+.flame-ring {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--ochre-tint);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+.flame-ring svg {
+  color: var(--ochre);
+}
+
+.sh-num {
+  font-family: var(--font-display);
+  font-size: 34px;
+  font-weight: 600;
+  margin-top: 14px;
+}
+.sh-num small {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--muted);
+  margin-left: 4px;
+}
+.sh-sub {
+  font-size: 12.5px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+.panel {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  margin-top: 14px;
+}
+.panel-title {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--faint);
+  margin-bottom: 14px;
+}
+.trow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 0;
+}
+.trow + .trow {
+  border-top: 1px solid var(--line-soft);
+}
+
+.tname {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  width: 148px;
+  flex: none;
+}
+.ttrack {
+  flex: 1;
+  height: 6px;
+  background: #f0eee6;
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+.tfill {
+  height: 100%;
+  border-radius: var(--radius-pill);
+}
+.tcount {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  width: 22px;
+  text-align: right;
+}
