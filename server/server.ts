@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/node";
 import express, { Request, Response } from "express";
 import mongoose from "mongoose";
 import cors from "cors";
@@ -9,6 +10,12 @@ import noteRoutes from "./routes/note.routes";
 import projectRoutes from "./routes/project.routes";
 
 dotenv.config();
+
+Sentry.init({
+  dsn: process.env.SENTRY_DSN,
+  environment: process.env.NODE_ENV || "development",
+  tracesSampleRate: 1.0,
+});
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -42,6 +49,7 @@ app.get("/health", (req: Request, res: Response) => {
 // Error handler after routes
 app.use(notFound);
 app.use(errorHandler);
+Sentry.setupExpressErrorHandler(app);
 
 const start = async (): Promise<void> => {
   try {
