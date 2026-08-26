@@ -1001,3 +1001,103 @@ select {
 .btn-ghost-rust:hover {
   background: var(--rust-tint);
 }
+
+/* ---------- 12 · COMPOSER (EXACT MOCKUP) ---------- */
+.card.composer {
+  padding: 18px 18px 16px;
+  margin-top: 24px;
+  border-top: 3px solid var(--sage);
+  /* .card handles the background, border, and border-radius */
+}
+.c-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--sage);
+  margin-bottom: 16px;
+}
+.c-label .mx {
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--ghost);
+  cursor: pointer;
+  line-height: 1;
+  background: none;
+  border: none;
+  font-family: var(--font-mono);
+}
+.addtag {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--ghost);
+  padding: 2px 0;
+  flex: 1;
+  min-width: 80px;
+  outline: none;
+  border: none;
+  background: none;
+}
+.addtag::placeholder {
+  color: var(--ghost);
+}
+
+.notebox {
+  width: 100%;
+  border: 1px solid var(--edge);
+  border-radius: var(--radius-md);
+  background: var(--card);
+  padding: 13px 14px;
+  min-height: 90px;
+  line-height: 1.7;
+  resize: vertical;
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  color: var(--ink);
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+.notebox:focus {
+  outline: none;
+  border-color: var(--sage);
+  box-shadow: 0 0 0 3px rgba(86, 112, 90, 0.14);
+}
+.notebox::placeholder {
+  color: var(--ghost);
+}
+
+.c-meta {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--ghost);
+  margin-top: 8px;
+  margin-bottom: 14px;
+  text-align: right;
+}
+.c-foot {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+}
+.c-foot .btn-ghost-rust {
+  margin-right: auto; /* Pushes Delete to the far left, Cancel/Save to the right */
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.chip .x {
+  margin-left: 4px;
+  cursor: pointer;
+  opacity: 0.6;
+  font-weight: 400;
+}
+.chip .x:hover {
+  opacity: 1;
+}

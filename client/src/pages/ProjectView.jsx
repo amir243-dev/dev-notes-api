@@ -1,14 +1,29 @@
 import { useState, useEffect } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import api from "../api";
 import plusIcon from "../assets/plus.svg";
 
 export default function ProjectView() {
   const { projectId } = useParams();
-  const navigate = useNavigate();
   const [project, setProject] = useState(null);
   const [notes, setNotes] = useState([]);
   const [activeTag, setActiveTag] = useState("All");
+
+  // Inline Composer State
+  const [composerState, setComposerState] = useState("hidden"); // 'hidden', 'create', 'edit'
+  const [editingNote, setEditingNote] = useState(null);
+  const [draftContent, setDraftContent] = useState("");
+  const [draftTags, setDraftTags] = useState([]);
+  const [tagInput, setTagInput] = useState("");
+
+  const fetchNotes = async () => {
+    try {
+      const notesRes = await api.get(`/notes?projectId=${projectId}`);
+      setNotes(notesRes.data.notes);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -86,6 +101,77 @@ export default function ProjectView() {
   };
   const getTagColor = (tag) => tagColors[tag] || "c-slate";
 
+  // Composer Handlers
+  const openCreate = () => {
+    setComposerState("create");
+    setEditingNote(null);
+    setDraftContent("");
+    setDraftTags([]);
+    setTagInput("");
+  };
+
+  const openEdit = (note) => {
+    setComposerState("edit");
+    setEditingNote(note);
+    setDraftContent(note.content);
+    setDraftTags(note.tags || []);
+    setTagInput("");
+  };
+
+  const closeComposer = () => {
+    setComposerState("hidden");
+    setEditingNote(null);
+    setDraftContent("");
+    setDraftTags([]);
+    setTagInput("");
+  };
+
+  const handleTagKeyDown = (e) => {
+    if ((e.key === "Enter" || e.key === ",") && tagInput.trim()) {
+      e.preventDefault();
+      if (!draftTags.includes(tagInput.trim()))
+        setDraftTags([...draftTags, tagInput.trim()]);
+      setTagInput("");
+    }
+  };
+
+  const handleSave = async () => {
+    if (!draftContent.trim()) return;
+    try {
+      if (composerState === "create") {
+        await api.post("/notes", {
+          content: draftContent,
+          projectId,
+          tags: draftTags,
+        });
+      } else if (composerState === "edit" && editingNote) {
+        await api.put(`/notes/${editingNote._id}`, {
+          content: draftContent,
+          tags: draftTags,
+        });
+      }
+      await fetchNotes(); // Refresh the list instantly
+      closeComposer();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to save note");
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!editingNote) return;
+    if (!window.confirm("Delete this entry permanently?")) return;
+    try {
+      await api.delete(`/notes/${editingNote._id}`);
+      await fetchNotes();
+      closeComposer();
+    } catch (err) {
+      alert("Failed to delete");
+    }
+  };
+
+  const wordCount = draftContent.split(/\s+/).filter(Boolean).length;
+
   return (
     <>
       <Link to="/projects" className="backlink">
@@ -111,7 +197,7 @@ export default function ProjectView() {
             — {project.entryCount || 0} ENTRIES
           </div>
         </div>
-        <button className="btn btn-secondary" onClick={() => navigate("/")}>
+        <button className="btn btn-secondary" onClick={openCreate}>
           <img
             src={plusIcon}
             alt=""
@@ -120,6 +206,90 @@ export default function ProjectView() {
           Entry
         </button>
       </div>
+
+      {/* INLINE COMPOSER (Frames 08 & 09) */}
+      {composerState !== "hidden" && (
+        <div className="card composer">
+          <div className="c-label">
+            <span>
+              {composerState === "create"
+                ? `NEW ENTRY · ${project.name.toUpperCase()}`
+                : `EDITING ENTRY #${editingNote._id.slice(-2).toUpperCase()} · ${project.name.toUpperCase()}`}
+            </span>
+            <button className="mx" onClick={closeComposer}>
+              ×
+            </button>
+          </div>
+
+          <div className="field">
+            <label className="field-label">TAGS</label>
+            <div className="tagbox">
+              {draftTags.map((t) => (
+                <span key={t} className={`chip chip-sm ${getTagColor(t)}`}>
+                  {t}{" "}
+                  <span
+                    className="x"
+                    onClick={() =>
+                      setDraftTags(draftTags.filter((x) => x !== t))
+                    }
+                  >
+                    ×
+                  </span>
+                </span>
+              ))}
+              <input
+                type="text"
+                className="addtag"
+                placeholder="+ add tag…"
+                value={tagInput}
+                onChange={(e) => setTagInput(e.target.value)}
+                onKeyDown={handleTagKeyDown}
+              />
+            </div>
+          </div>
+
+          <div className="field">
+            <label className="field-label">NOTE</label>
+            <textarea
+              className="notebox"
+              placeholder="What did you build, break, or decide?"
+              value={draftContent}
+              onChange={(e) => setDraftContent(e.target.value)}
+              autoFocus
+            />
+          </div>
+
+          <div className="c-meta">
+            {wordCount} WORDS ·{" "}
+            {composerState === "edit"
+              ? "EDITED JUST NOW"
+              : `DRAFT SAVED ${new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false })}`}
+          </div>
+
+          <div className="c-foot">
+            {composerState === "edit" && (
+              <button className="btn-ghost-rust" onClick={handleDelete}>
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                  <path
+                    d="M3 4.5h10M6.5 4.5V3h3v1.5M4.5 4.5l.6 8.5h5.8l.6-8.5"
+                    stroke="currentColor"
+                    strokeWidth="1.4"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                Delete
+              </button>
+            )}
+            <button className="btn btn-secondary" onClick={closeComposer}>
+              Cancel
+            </button>
+            <button className="btn btn-primary" onClick={handleSave}>
+              {composerState === "create" ? "Save entry" : "Save changes"}
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="filters">
         {allTags.map((tag) => (
@@ -141,7 +311,7 @@ export default function ProjectView() {
               <div
                 key={note._id}
                 className="erow"
-                onClick={() => navigate(`/notes/${note._id}`)}
+                onClick={() => openEdit(note)}
               >
                 <div className="erow-top">
                   {note.tags.slice(0, 3).map((t) => (
@@ -149,10 +319,10 @@ export default function ProjectView() {
                       {t}
                     </span>
                   ))}
-                  <span className="row-time">{formatTime(note.createdAt)}</span>
+                  <span className="etime">{formatTime(note.createdAt)}</span>
                 </div>
-                <div className="row-text">{note.content}</div>
-                <div className="row-meta">
+                <div className="etext">{note.content}</div>
+                <div className="emeta">
                   #{note._id.slice(-2).toUpperCase()} · EDITED{" "}
                   {formatTime(note.updatedAt || note.createdAt)}
                 </div>
