@@ -17,7 +17,7 @@ Sentry.init({
   tracesSampleRate: 1.0,
 });
 
-const app = express();
+export const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors());
@@ -69,4 +69,6 @@ const start = async (): Promise<void> => {
     process.exit(1);
   }
 };
-start();
+if (process.env.NODE_ENV !== "test") {
+  start();
+}
