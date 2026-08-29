@@ -8,6 +8,16 @@ Originally, this repository was a generic "Notes CRUD" app. That framing was fun
 
 The product was reframed into a **Build Log**: a structured journal organized by project. The UX was inverted to be capture-first (opening directly into a quick-capture composer), and the backend aggregation was repointed to track meaningful developer metrics instead of generic string lengths.
 
+## Why This Exists
+
+Generic note-taking applications are designed for flat, unstructured capture. For software engineers and other project-based workers, this creates friction. Technical decisions, debugging insights, and architectural choices get lost in a sea of unrelated daily notes, or scattered across commit messages and disconnected documentation tools.
+
+This isn't a notes app. It's a receipt.
+
+A general-purpose notes tool gives you infinite flexibility and infinite setup — you build your own structure, maintain it, and eventually stop maintaining it. DevNotes Build Log is the opposite: the structure is baked in, zero config, and each entry is deliberately short. You're not writing documentation. You're leaving a breadcrumb — "chose X over Y, here's why, in two sentences" — timestamped, scoped to a project, tagged, done. Nobody reorganizes a receipt. They file it and find it later. That's the whole product, and the shortness is the feature. A wiki invites you to write an essay. A receipt asks for a sentence.
+
+Notion and Obsidian are blank canvases that demand you become an architect of your own notes. They're built for documentation, knowledge management, and life organization — heavy, by design. This is built for contextual micro-logging: the difference between a filing cabinet and a pocket notebook you only pull out while standing on the job site. It doesn't try to hold your tasks, your essays, or your personal life. It only holds the "why did I do this?" and "how did I fix this?" moments, scoped strictly to the project at hand. It isn't rivaling them; it's replacing the messy "Scratchpad" or "Untitled Note" you keep at the bottom of your sidebar.
+
 ## Tech Stack
 
 - **Backend:** Node.js, Express, TypeScript (Strict Mode)
