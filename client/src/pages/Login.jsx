@@ -17,7 +17,27 @@ export default function Login() {
       else await login(email, password);
       navigate("/");
     } catch (err) {
-      alert(err.response?.data?.message || "Authentication failed");
+      let message = "An unexpected error occured, please try again";
+      if (!err.response) {
+        // Network error, CORS block, or Render cold-start timeout
+        message =
+          "Cannot connect to the server. Check your internet or try refreshing the page";
+      } else if (err.response.status === 401) {
+        // Bad login
+        message = "Incorrect email or password. Please try again.";
+      } else if (err.response.status === 400 && isRegister) {
+        // Duplicate email on register
+        message =
+          "An account with this email already exists. Try logging in instead";
+      } else if (err.response.status === 429) {
+        // Rate limit
+        message =
+          "Too many attempts. Please wait a few minutes before trying again.";
+      } else if (err.response?.message) {
+        // Fallback to backend message
+        message = err.response.data.message;
+      }
+      alert(message);
     }
   };
 
@@ -87,7 +107,7 @@ export default function Login() {
               <input
                 type="text"
                 className="input"
-                placeholder="Jaysh"
+                placeholder="Ade"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
@@ -99,7 +119,7 @@ export default function Login() {
             <input
               type="email"
               className="input"
-              placeholder="jaysh@devnotes.app"
+              placeholder="ade@devnotes.app"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required

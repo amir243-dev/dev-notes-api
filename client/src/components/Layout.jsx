@@ -4,10 +4,22 @@ import flameIcon from "../assets/flame.svg";
 import captureIcon from "../assets/capture.svg";
 import projectsIcon from "../assets/projects.svg";
 import statsIcon from "../assets/stats.svg";
+import { useEffect, useState } from "react";
+import api from "../api";
 
 export default function Layout() {
   const { user, logout } = useAuth();
   const location = useLocation();
+  const [streak, setStreak] = useState(0);
+
+  useEffect(() => {
+    if (user) {
+      api
+        .get("/notes/stats")
+        .then((res) => res.data.streak || 0)
+        .catch(() => setStreak(0));
+    }
+  }, [user]);
 
   if (!user) return <Outlet />;
 
@@ -28,7 +40,7 @@ export default function Layout() {
               alt=""
               style={{ width: "12px", height: "12px" }}
             />
-            <span>12-DAY</span>
+            <span>{streak}-DAY</span>
           </div>
           <Link to="/profile" className="avatar">
             {user.name ? user.name.charAt(0).toUpperCase() : "A"}
